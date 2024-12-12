@@ -1,0 +1,82 @@
+#include<stdio.h>
+#include<conio.h>
+#include<stdlib.h>
+void registration();
+void login();
+void update();
+void print();
+void search();
+
+struct data{
+	int long adhar_no,mob_no;
+	string name[20],f_name,add[50],lm[50],dis[20],st[10],email[30],nationality[10],dob[20];
+	int age[3],pin[10];
+	char gender;
+	}d[50];
+	
+int main()
+{
+	int ch;
+	
+	while(ch!=6){
+		printf("\n\t-------------------------------------------\n");
+		printf("\n\t\t\t\t\tWELCOME TO MY AADHAR SERVICE\n");
+		printf("                                          \n");
+		printf("\t1. REGISTRATION\n2. LOGIN\n3. UPDATE\n4. PRINT\n5. SEARCH\n");
+		printf("\n\tEnter your choice:");
+		scanf("%d",&ch);
+		switch(ch){
+			
+			case 1: registration(); 
+			break;
+			case 2: login();
+			break;
+			case 3: update();
+			break;
+			case 4: print();
+			break;
+			case 5: search();
+			break;
+			
+		}
+		
+	}
+		
+}
+void registration()
+{
+	FILE *fp;
+	fp = fopen("user","ab+");
+	if(fp==NULL)
+	{
+		printf("Error:Can not open the file\n");
+		return;
+	}
+	else
+	{
+		printf("Enter the user name:");
+		scanf("%s\n",d.name);
+		printf("Enter the father name:");
+		scanf("%s\n",d.f_name);
+		printf("Enter your Address:");
+		scanf("%s\n",d.add);
+		printf("Enter any landmark:");
+		scanf("%s\n",d.lm);
+		printf("Enter district:");
+		scanf("%s\n",d.dis);
+		printf("Enter the state:");
+		scanf("%s\n",d.st);
+		printf("Enter pincode:");
+		scanf("%d\n",&d.pin);
+		printf("Enter phone no.");
+		scanf("%ld\n",&d.mob_no.);
+		printf("Enter your date of birth:");
+		scanf("%s\n",d.dob);
+		printf("Enter your nationality:");
+		scanf("%s\n",d.nationality);
+		printf("Enter your age:");
+		scanf("%d\n",&d.age);
+		printf("Enter your gender:");
+		scanf("%c\n",&d.gender);
+	}
+}
