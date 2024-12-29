@@ -1,166 +1,383 @@
-#include<stdio.h>
-#include<conio.h>
-#include<stdlib.h>
-#include<time.h>
 
-void registration();
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-// Struct to hold user data
 struct data {
     long long aadhar_no;
-	long long  mob_no;
-    char name[10], address[20],  lm[20], dis[20], st[20], email[30], nationality[20], dob[20];
-    char fatherN[10];
-    int age;
-    int pin;
+    char name[50], add[100], lm[50], dis[50], st[50], nationality[20], dob[20];
+    char f_name[50];
+    int age, pin;
+    long phn;
     char gender;
-    
-    
 } d;
 
+void registration();
+void login();
+void update();
+void display();
+void remove_record();
+void count_records();
+void list_all_users();
+void search_record();
+int validate_aadhar(long long aadhar_no);
+long long generate_aadhar();
 
 int main() {
     int ch;
 
-    while(1) {
-        printf("\n\t-------------------------------------------\n");
+    while (1) {
         printf("\n\t\tWELCOME TO MY AADHAR SERVICE\n");
-        printf("                                          \n");
-        printf("1. REGISTRATION\n2. LOGIN\n3. UPDATE\n4. PRINT\n5. SEARCH\n6. Exit");
-        //printf("\n%d\n",rand());
-        printf("\nEnter your choice: ");   
+        printf("1. REGISTRATION\n2. LOGIN\n3. UPDATE\n4. DISPLAY\n5. REMOVE\n6. SEARCH\n7. LIST ALL USERS\n8. COUNT RECORDS\n9. Exit\n");
+        printf("Enter your choice: ");
         scanf("%d", &ch);
-        getchar();  // To consume any leftover newline character from the input buffer
+        getchar();
 
-        switch(ch) {
-            case 1: 
-                registration(); 
+        switch (ch) {
+            case 1:
+                registration();
                 break;
-            case 6: 
+            case 2:
+                login();
+                break;
+            case 3:
+                update();
+                break;
+            case 4:
+                display();
+                break;
+            case 5:
+                remove_record();
+                break;
+            case 6:
+                search_record();
+                break;
+            case 7:
+                list_all_users();
+                break;
+            case 8:
+                count_records();
+                break;
+            case 9:
                 exit(0);
                 break;
-            default: 
+            default:
                 printf("Invalid choice\n");
                 break;
         }
     }
 }
 
-void registration() 
-{
-	
-    FILE *fp;
-    fp = fopen("user.data", "ab+");  // Open the file in append-binary mode
+long long generate_aadhar() {
+    srand(time(0));
+    long long aadhar = 100000000000LL + rand() % 900000000000LL;
+    return aadhar;
+}
 
+int validate_aadhar(long long aadhar_no) {
+    int digits = 0;
+    while (aadhar_no > 0) {
+        aadhar_no /= 10;
+        digits++;
+    }
+    return (digits == 12);
+}
+
+void registration() {
+    FILE *fp = fopen("user.data", "ab+");
     if (fp == NULL) {
         printf("Error: Cannot open the file\n");
         return;
     }
-    //srand(time(0000000000000));
-    //printf("\nAadhar generated = %d\n",rand());// Get user details
+
     printf("Enter the user name: ");
-    scanf("%s ", d.name);
-    getchar(); // To consume the newline character
+    fgets(d.name, sizeof(d.name), stdin);
+
 
     printf("Enter the father's name: ");
-    scanf("%s ", d.fatherN);
-    getchar(); 
+    fgets(d.f_name, sizeof(d.f_name), stdin);
+    
 
     printf("Enter your Address: ");
-    fgets(d.address, sizeof(d.address), stdin);//scanf("%s ", d.address);
-    getchar();
+    fgets(d.add, sizeof(d.add), stdin);
+    
 
     printf("Enter any landmark: ");
-    fgets(d.lm, sizeof(d.lm), stdin);//scanf("%c ", d.lm); 
-    getchar();
+    fgets(d.lm, sizeof(d.lm), stdin);
+    
 
     printf("Enter district: ");
-    fgets(d.dis, sizeof(d.dis), stdin);//scanf("%s ", d.dis);
-    getchar();
+    fgets(d.dis, sizeof(d.dis), stdin);
+    
 
     printf("Enter the state: ");
-    fgets(d.st, sizeof(d.st), stdin);//scanf("%s", d.st);
-    getchar(); 
+    fgets(d.st, sizeof(d.st), stdin);
+    
 
     printf("Enter pincode: ");
-    fgets(d.st, sizeof(d.st), stdin);//scanf("%d", &d.pin);
-    getchar(); // To consume the newline character
+    scanf("%d", &d.pin);
+    getchar();
 
     printf("Enter phone no.: ");
-    scanf("%ld", &d.mob_no);
-    getchar(); // To consume the newline character
+    scanf("%ld", &d.phn);
+    getchar();
 
     printf("Enter your date of birth (dd/mm/yyyy): ");
-    fgets(d.dob, sizeof(d.dob), stdin);//scanf("%s", d.dob);
-    getchar(); // To consume the newline character
+    fgets(d.dob, sizeof(d.dob), stdin);
+    
 
     printf("Enter your nationality: ");
-    fgets(d.nationality, sizeof(d.nationality), stdin);//scanf("%s", d.nationality);
-    getchar(); // To consume the newline character
+    fgets(d.nationality, sizeof(d.nationality), stdin);
+    
 
     printf("Enter your age: ");
     scanf("%d", &d.age);
-    getchar(); // To consume the newline character
+    getchar();
 
     printf("Enter your gender (M/F): ");
-    scanf("%c", &d.gender);  // Gender input
-    printf("enter adhar number:");
-    scanf("%d",&d.adhar_no);
-    getchar();
-    
-    //srand(time(0000000000000));
-    //printf("\nAadhar generated = %d\n",rand()); 
-    //scanf("%d",&adhar_no);
+    scanf(" %c", &d.gender);
 
-    // Save user details to the file
-    fwrite(&d, sizeof(d), 1, fp);
-    fclose(fp);  // Close the file after writing
+    d.aadhar_no = generate_aadhar();
+    printf("Aadhar no generated: %lld\n", d.aadhar_no);
 
-    printf("\nRegistration successful!\n");
-}
-
-void update()
-{
-	FILE *fp;
-	int aadhar,x=0;
-	fp = fopen("user.data","rb+");
-	printf("\n\t Enter aadhar num you want to search:");
-	scanf("%d",&aadhar);
-	if (fp==NULL)
-	{
-		printf("\n file not found\n");
-	}
-	else
-	{
-		fseek(fp,-sizeof(struct data),1);
-		 while(fread(&s,sizeof(struct data),1,fp)>0 && x==0){
-        if(aadhar==d.adhar_no){
-            x=1;
-            printf("\tRECOURD found successfully Now Doing update .... !\n");
-            printf("\taadharno\tName\tfathername\tmob_no\tAddress\tDistrict\tstate\tlandmark\tpincode\tdob\tnationality\tage\tgender\n");
-            printf("\t%ld\t%s\t%ld\t%s\t%s\t%s\t%s\t%d\t%s\t%s\t%d\t%c\n",d.aadhar_no,d.name,d.f_name,d.aadhar_no,&mob_no,d.address,,s.marks,s.grade);
-            printf("\n\t---update recored-----");
-             printf("\t\nupdate Roll Number: ");
-    scanf("%d",&aadhar_no);
-    getchar();
-    printf("\t\nupdate Class Section: ");
-    scanf("%c",&s.sec);
-    printf("\t\nupdate Name: ");
-    scanf("%s",s.name);
-    printf("\t\nupdate Markes: ");
-    scanf("%d",&s.marks);
-    printf("\t\nupdate Grades: ");
-    scanf("%f",&s.grade);
-    
-    fwrite(&s,sizeof(struct student),1,fp);
-    printf("\t\nupdate recored successfully...!\n");
-        }
-
-    }}
-    if(x==0){
-        printf("\trecord not found :) ..!\n");
+    if (fwrite(&d, sizeof(d), 1, fp) == 1) {
+        printf("\nRegistration successful!\n");
+    } else {
+        printf("\nError: Unable to write data to file.\n");
     }
+
     fclose(fp);
-     
 }
+
+void login() {
+    FILE *fp = fopen("user.data", "rb");
+    if (fp == NULL) {
+        printf("Error: Cannot open the file\n");
+        return;
+    }
+
+    char input_username[50];
+    long input_phn;
+    int found = 0;
+
+    printf("Enter user name: ");
+    fgets(input_username, sizeof(input_username), stdin);
+    
+
+    printf("Enter phone no: ");
+    scanf("%ld", &input_phn);
+
+    while (fread(&d, sizeof(d), 1, fp)) {
+        if (strcmp(input_username, d.name) == 0 && input_phn == d.phn) {
+            printf("Login successful\n");
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("User not found or incorrect details\n");
+    }
+
+    fclose(fp);
+}
+
+void update() {
+    FILE *fp = fopen("user.data", "rb+");
+    if (fp == NULL) {
+        printf("Error: Cannot open the file\n");
+        return;
+    }
+
+    long long aadhar_no;
+    int found = 0;
+
+    printf("Enter Aadhar no to update: ");
+    scanf("%lld", &aadhar_no);
+
+    if (!validate_aadhar(aadhar_no)) {
+        printf("Invalid Aadhar Number. Please enter a valid 12-digit number.\n");
+        fclose(fp);
+        return;
+    }
+
+    while (fread(&d, sizeof(d), 1, fp)) {
+        if (d.aadhar_no == aadhar_no) {
+            found = 1;
+            printf("Record found. Update the details:\n");
+
+            printf("Enter new user name: ");
+            getchar();
+            fgets(d.name, sizeof(d.name), stdin);
+           
+
+            printf("Enter new father's name: ");
+            fgets(d.f_name, sizeof(d.f_name), stdin);
+           
+
+            printf("Enter new Address: ");
+            fgets(d.add, sizeof(d.add), stdin);
+            
+
+            printf("Enter new landmark: ");
+            fgets(d.lm, sizeof(d.lm), stdin);
+            
+
+            printf("Enter new district: ");
+            fgets(d.dis, sizeof(d.dis), stdin);
+            
+
+            printf("Enter new state: ");
+            fgets(d.st, sizeof(d.st), stdin);
+            
+
+            printf("Enter new pincode: ");
+            scanf("%d", &d.pin);
+
+            printf("Enter new phone no.: ");
+            scanf("%ld", &d.phn);
+
+            printf("Enter new date of birth (dd/mm/yyyy): ");
+            getchar();
+            fgets(d.dob, sizeof(d.dob), stdin);
+            
+
+            printf("Enter new age: ");
+            scanf("%d", &d.age);
+
+            printf("Enter new gender (M/F): ");
+            scanf(" %c", &d.gender);
+
+            fseek(fp, -sizeof(d), SEEK_CUR);
+            fwrite(&d, sizeof(d), 1, fp);
+
+            printf("Record updated successfully\n");
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Record not found\n");
+    }
+
+    fclose(fp);
+}
+
+void display() {
+    FILE *fp = fopen("user.data", "rb");
+    if (fp == NULL) {
+        printf("Error: Cannot open the file\n");
+        return;
+    }
+
+   
+    while (fread(&d, sizeof(d), 1, fp)) {
+   	 printf("\n------------- GOVERNMENT OF INDIA -------------\n");
+    printf("\n------- UNIQUE IDENTIFICATION AUTHORITY OF INDIA -------\n\n");
+    	
+        printf("Name: %s\nFather's Name: %s\nAddress: %s\nLandmark: %s\nDistrict: %s\nState: %s\nPincode: %d\nPhone: %ld\nDOB: %s\nAge: %d\nGender: %c\n  \t\t:YOUR AADHAR NUMBER: \n\t\t   %lld\n\n", 
+            d.name, d.f_name, d.add, d.lm, d.dis, d.st, d.pin, d.phn, d.dob, d.age, d.gender, d.aadhar_no);
+        printf("\n----------------THANKYOU FOR VISITING---------------\n");
+		printf("---------------------------------------------------------------------------------\n");    
+    }
+
+    fclose(fp);
+}
+
+void remove_record() {
+    FILE *fp = fopen("user.data", "rb");
+    FILE *temp_fp = fopen("temp.data", "wb");
+
+    if (fp == NULL || temp_fp == NULL) {
+        printf("Error: Cannot open the file\n");
+        return;
+    }
+
+    long long aadhar_no;
+    int found = 0;
+
+    printf("Enter Aadhar no to delete: ");
+    scanf("%lld", &aadhar_no);
+
+    while (fread(&d, sizeof(d), 1, fp)) {
+        if (d.aadhar_no == aadhar_no) {
+            found = 1;
+            printf("Record with Aadhar no %lld deleted successfully\n", aadhar_no);
+        } else {
+            fwrite(&d, sizeof(d), 1, temp_fp);
+        }
+    }
+
+    if (found=0) {
+        printf("Record not found\n");
+    }
+
+    fclose(fp);
+    fclose(temp_fp);
+
+    remove("user.data");
+    rename("temp.data", "user.data");
+}
+
+void count_records() {
+    FILE *fp = fopen("user.data", "rb");
+    if (fp == NULL) {
+        printf("Error: Cannot open the file\n");
+        return;
+    }
+
+    int count = 0;
+    while (fread(&d, sizeof(d), 1, fp)) {
+        count++;
+    }
+
+    printf("Total records: %d\n", count);
+
+    fclose(fp);
+}
+
+void list_all_users() {
+    FILE *fp = fopen("user.data", "rb");
+    if (fp == NULL) {
+        printf("Error: Cannot open the file\n");
+        return;
+    }
+
+    printf("\n------- List of Users -------\n");
+    while (fread(&d, sizeof(d), 1, fp)) {
+        printf("Name: %s, Aadhar No: %lld\n", d.name, d.aadhar_no);
+    }
+
+    fclose(fp);
+}
+
+void search_record() {
+    FILE *fp = fopen("user.data", "rb");
+    if (fp == NULL) {
+        printf("Error: Cannot open the file\n");
+        return;
+    }
+
+    long long aadhar_no;
+    int found = 0;
+
+    printf("Enter Aadhar no to search: ");
+    scanf("%lld", &aadhar_no);
+
+    while (fread(&d, sizeof(d), 1, fp)) {
+        if (d.aadhar_no == aadhar_no) {
+            printf("Record Found:\n");
+            printf("Name: %s\nFather's Name: %s\nAddress: %s\nLandmark: %s\nDistrict: %s\nState: %s\nPincode: %d\nPhone: %ld\nDOB: %s\nAge: %d\nGender: %c\nAadhar No: %lld\n\n", 
+                d.name, d.f_name, d.add, d.lm, d.dis, d.st, d.pin, d.phn, d.dob, d.age, d.gender, d.aadhar_no);
+            found = 1;
+            break;
+        }
+    }
+
+    if (found=0) {
+        printf("Record not found\n");
+    }
+
+    fclose(fp);
 }
